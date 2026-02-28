@@ -1,0 +1,135 @@
+/* MediTab - Custom Styles */
+
+:root {
+    --mt-og: #0d6efd;
+    --mt-oo: #dc3545;
+    --mt-cg: #198754;
+    --mt-co: #fd7e14;
+    --mt-primary: #0d6efd;
+    --mt-bg: #f8f9fa;
+}
+
+body {
+    background-color: var(--mt-bg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+/* Cards */
+.card {
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,.08);
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tournament-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,.12);
+}
+
+/* Position badges */
+.position-badge {
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85em;
+    color: #fff;
+}
+
+.position-badge-og,
+.badge-og {
+    background-color: var(--mt-og) !important;
+    color: #fff;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.8em;
+}
+
+.position-badge-oo,
+.badge-oo {
+    background-color: var(--mt-oo) !important;
+    color: #fff;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.8em;
+}
+
+.position-badge-cg,
+.badge-cg {
+    background-color: var(--mt-cg) !important;
+    color: #fff;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.8em;
+}
+
+.position-badge-co,
+.badge-co {
+    background-color: var(--mt-co) !important;
+    color: #fff;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.8em;
+}
+
+/* Draw table */
+.draw-table th {
+    font-size: 0.85rem;
+}
+
+.draw-table td {
+    vertical-align: middle;
+}
+
+/* Input group position colors */
+.input-group-text.position-badge-og { background-color: var(--mt-og); }
+.input-group-text.position-badge-oo { background-color: var(--mt-oo); }
+.input-group-text.position-badge-cg { background-color: var(--mt-cg); }
+.input-group-text.position-badge-co { background-color: var(--mt-co); }
+
+/* Hero section */
+.display-4 {
+    font-weight: 800;
+}
+
+/* Tab nav */
+.nav-tabs .nav-link {
+    color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: 600;
+    color: var(--mt-primary);
+}
+
+/* Alert */
+.auto-dismiss {
+    transition: opacity 0.5s ease;
+}
+
+/* Footer */
+footer {
+    font-size: 0.9rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+    .draw-table {
+        font-size: 0.8rem;
+    }
+
+    .position-badge {
+        font-size: 0.75em;
+    }
+}

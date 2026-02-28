@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}{{ team.name }} - Team Dashboard{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/tournaments/">Tournaments</a></li>
+            <li class="breadcrumb-item"><a href="{{ tournament.get_absolute_url }}">{{ tournament.name }}</a></li>
+            <li class="breadcrumb-item active">{{ team.name }}</li>
+        </ol>
+    </nav>
+    <div class="card border-primary mb-4">
+        <div class="card-body">
+            <h2 class="card-title">{{ team.name }}</h2>
+            {% if team.code_name %}
+                <p class="text-muted mb-1"><strong>Code:</strong> {{ team.code_name }}</p>
+            {% endif %}
+            {% if team.institution %}
+                <p class="text-muted mb-1"><i class="bi bi-building me-1"></i>{{ team.institution }}</p>
+            {% endif %}
+            <div class="row mt-3">
+                <div class="col-auto">
+                    <span class="badge bg-success fs-6">{{ team.wins }} Wins</span>
+                </div>
+                <div class="col-auto">
+                    <span class="badge bg-primary fs-6">{{ team.total_points }} Points</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <h4>Results</h4>
+        {% if results %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Round</th>
+                            <th>Room</th>
+                            <th>Position</th>
+                            <th>Rank</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <td>{{ result.ballot.debate.round.name }}</td>
+                            <td>{{ result.ballot.debate.room|default:"—" }}</td>
+                            <td>
+                                <span class="badge position-badge-{{ result.position|lower }}">
+                                    {{ result.position }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if result.rank == 1 %}
+                                    <span class="badge bg-warning text-dark">1st</span>
+                                {% elif result.rank == 2 %}
+                                    <span class="badge bg-secondary">2nd</span>
+                                {% elif result.rank == 3 %}
+                                    <span class="badge bg-secondary">3rd</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">4th</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ result.total_points }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No results yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <h4>Speakers</h4>
+        {% if speakers %}
+            <div class="list-group">
+                {% for speaker in speakers %}
+                <a href="/tournaments/{{ tournament.slug }}/participants/speakers/{{ speaker.id }}/"
+                   class="list-group-item list-group-item-action">
+                    <div class="d-flex justify-content-between">
+                        <span><i class="bi bi-person me-1"></i>{{ speaker.name }}</span>
+                        <span class="badge bg-primary">{{ speaker.average_score }}</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No speakers added.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
