@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Generate Draw - {{ round.name }}{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/tournaments/">Tournaments</a></li>
+            <li class="breadcrumb-item"><a href="{{ tournament.get_absolute_url }}">{{ tournament.name }}</a></li>
+            <li class="breadcrumb-item"><a href="/tournaments/{{ tournament.slug }}/draws/round/{{ round.id }}/">{{ round.name }}</a></li>
+            <li class="breadcrumb-item active">Generate Draw</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-shuffle me-2"></i>Generate Draw: {{ round.name }}</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Round Details</h5>
+                <dl class="row">
+                    <dt class="col-sm-5">Round</dt>
+                    <dd class="col-sm-7">{{ round.name }} (#{{ round.seq }})</dd>
+                    <dt class="col-sm-5">Draw Type</dt>
+                    <dd class="col-sm-7">{{ round.get_draw_type_display }}</dd>
+                    <dt class="col-sm-5">Current Status</dt>
+                    <dd class="col-sm-7">{{ round.get_status_display }}</dd>
+                </dl>
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    Generating a new draw will <strong>delete any existing draw</strong> for this round.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg confirm-action"
+                                data-confirm="Generate draw for {{ round.name }}? This will delete any existing draw.">
+                            <i class="bi bi-shuffle me-1"></i>Generate Draw
+                        </button>
+                        <a href="/tournaments/{{ tournament.slug }}/draws/round/{{ round.id }}/"
+                           class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

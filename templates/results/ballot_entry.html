@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Enter Ballot{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/tournaments/">Tournaments</a></li>
+            <li class="breadcrumb-item"><a href="{{ tournament.get_absolute_url }}">{{ tournament.name }}</a></li>
+            <li class="breadcrumb-item active">Ballot Entry</li>
+        </ol>
+    </nav>
+    <h1><i class="bi bi-clipboard2-check me-2"></i>Ballot Entry</h1>
+    <p class="text-muted">
+        Round: <strong>{{ debate.round.name }}</strong>
+        {% if debate.room %} | Room: <strong>{{ debate.room }}</strong>{% endif %}
+    </p>
+</div>
+
+<form method="post" id="ballotForm">
+    {% csrf_token %}
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Team Rankings</h5>
+            <small class="text-muted">Rank each team: 1st (3 pts), 2nd (2 pts), 3rd (1 pt), 4th (0 pts)</small>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for team, position in teams %}
+                <div class="col-md-6">
+                    <div class="card border-secondary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">
+                                    <span class="position-badge position-badge-{{ position|lower }} me-2">{{ position }}</span>
+                                    {{ team.name }}
+                                </h6>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Rank</label>
+                                <select name="rank_{{ position }}" class="form-select" required>
+                                    <option value="">-- Select Rank --</option>
+                                    <option value="1">1st Place (3 pts)</option>
+                                    <option value="2">2nd Place (2 pts)</option>
+                                    <option value="3">3rd Place (1 pt)</option>
+                                    <option value="4">4th Place (0 pts)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Speaker Scores</h5>
+            <small class="text-muted">Score each speaker from 50 to 100</small>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for team, position in teams %}
+                    {% for speaker in team.speakers.all %}
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text position-badge-{{ position|lower }} text-white">{{ position }}</span>
+                            <span class="input-group-text">{{ speaker.name }}</span>
+                            <input type="number"
+                                   name="score_{{ speaker.id }}"
+                                   class="form-control"
+                                   min="50" max="100" step="0.5"
+                                   placeholder="75"
+                                   required>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-check-circle me-1"></i>Submit Ballot
+        </button>
+        <a href="{{ tournament.get_absolute_url }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+    </div>
+</form>
+{% endblock %}

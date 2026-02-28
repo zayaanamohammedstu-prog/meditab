@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - {{ tournament.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/tournaments/">Tournaments</a></li>
+                <li class="breadcrumb-item"><a href="{{ tournament.get_absolute_url }}">{{ tournament.name }}</a></li>
+                <li class="breadcrumb-item active">Admin</li>
+            </ol>
+        </nav>
+        <h1><i class="bi bi-gear me-2"></i>{{ tournament.name }}</h1>
+    </div>
+    <a href="{{ tournament.get_absolute_url }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Public View
+    </a>
+</div>
+
+<!-- Quick stats -->
+<div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+    <div class="col">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body py-3">
+                <h3 class="mb-0">{{ teams_count }}</h3>
+                <small>Teams</small>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body py-3">
+                <h3 class="mb-0">{{ adjudicators_count }}</h3>
+                <small>Adjudicators</small>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body py-3">
+                <h3 class="mb-0">{{ rounds_count }}</h3>
+                <small>Rounds</small>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-center bg-warning text-dark">
+            <div class="card-body py-3">
+                <h3 class="mb-0">{{ tournament.break_size }}</h3>
+                <small>Break Size</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs mb-4" id="dashboardTabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#teams">Teams ({{ teams_count }})</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#adjudicators">Adjudicators ({{ adjudicators_count }})</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#rounds">Rounds</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <!-- Overview -->
+    <div class="tab-pane fade show active" id="overview">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header"><strong>Tournament Details</strong></div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Format</dt>
+                            <dd class="col-sm-8">{{ tournament.get_format_display }}</dd>
+                            <dt class="col-sm-4">Institution</dt>
+                            <dd class="col-sm-8">{{ tournament.institution|default:"—" }}</dd>
+                            <dt class="col-sm-4">Dates</dt>
+                            <dd class="col-sm-8">
+                                {{ tournament.start_date|default:"TBA" }}
+                                {% if tournament.end_date %} &ndash; {{ tournament.end_date }}{% endif %}
+                            </dd>
+                            <dt class="col-sm-4">Prelim Rounds</dt>
+                            <dd class="col-sm-8">{{ tournament.num_prelim_rounds }}</dd>
+                            <dt class="col-sm-4">Break Rounds</dt>
+                            <dd class="col-sm-8">{{ tournament.num_break_rounds }}</dd>
+                            <dt class="col-sm-4">Tab Released</dt>
+                            <dd class="col-sm-8">
+                                {% if tournament.tab_released %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">No</span>
+                                {% endif %}
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header"><strong>Quick Actions</strong></div>
+                    <div class="card-body d-grid gap-2">
+                        <a href="/admin/tournaments/tournament/{{ tournament.id }}/change/"
+                           class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i>Edit Tournament
+                        </a>
+                        <a href="/admin/draws/round/add/" class="btn btn-outline-success">
+                            <i class="bi bi-plus-circle me-1"></i>Add Round
+                        </a>
+                        <a href="/admin/participants/team/add/" class="btn btn-outline-info">
+                            <i class="bi bi-people me-1"></i>Add Team
+                        </a>
+                        <a href="/admin/adjudication/adjudicator/add/" class="btn btn-outline-warning">
+                            <i class="bi bi-person-badge me-1"></i>Add Adjudicator
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teams -->
+    <div class="tab-pane fade" id="teams">
+        {% if teams %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Team</th>
+                            <th>Code</th>
+                            <th>Institution</th>
+                            <th>Speakers</th>
+                            <th>Wins</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for team in teams %}
+                        <tr>
+                            <td>
+                                <a href="/tournaments/{{ tournament.slug }}/participants/teams/{{ team.id }}/">
+                                    {{ team.name }}
+                                </a>
+                            </td>
+                            <td class="text-muted">{{ team.code_name|default:"—" }}</td>
+                            <td>{{ team.institution|default:"—" }}</td>
+                            <td>{{ team.speakers.count }}</td>
+                            <td>{{ team.wins }}</td>
+                            <td>{{ team.total_points }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No teams registered yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Adjudicators -->
+    <div class="tab-pane fade" id="adjudicators">
+        {% if adjudicators %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Institution</th>
+                            <th>Base Score</th>
+                            <th>Independent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for adj in adjudicators %}
+                        <tr>
+                            <td>{{ adj.name }}</td>
+                            <td>{{ adj.institution|default:"—" }}</td>
+                            <td>{{ adj.base_score }}</td>
+                            <td>
+                                {% if adj.independent %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No adjudicators registered yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Rounds -->
+    <div class="tab-pane fade" id="rounds">
+        {% if rounds %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Motion</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for round in rounds %}
+                        <tr>
+                            <td>{{ round.seq }}</td>
+                            <td>{{ round.name }}</td>
+                            <td>{{ round.get_draw_type_display }}</td>
+                            <td>
+                                {% if round.status == 'released' %}
+                                    <span class="badge bg-success">Released</span>
+                                {% elif round.status == 'confirmed' %}
+                                    <span class="badge bg-info">Confirmed</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">{{ round.motion|default:"—"|truncatewords:8 }}</td>
+                            <td>
+                                <a href="/tournaments/{{ tournament.slug }}/draws/round/{{ round.id }}/generate/"
+                                   class="btn btn-outline-primary btn-sm">Generate Draw</a>
+                                <a href="/tournaments/{{ tournament.slug }}/draws/round/{{ round.id }}/"
+                                   class="btn btn-outline-secondary btn-sm">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No rounds created yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
